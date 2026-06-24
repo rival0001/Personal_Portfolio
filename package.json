@@ -1,0 +1,16 @@
+{
+  "name": "ritik-singh-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Premium full-stack personal portfolio for Ritik Singh.",
+  "scripts": {
+    "install:all": "pnpm install",
+    "dev": "concurrently \"pnpm --dir server dev\" \"pnpm --dir client dev\"",
+    "build": "pnpm --dir client build",
+    "start": "pnpm --dir server start",
+    "seed": "pnpm --dir server seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
