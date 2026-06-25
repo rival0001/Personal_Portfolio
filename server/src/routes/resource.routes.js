@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import { adminOnly, protect } from "../middleware/auth.js";
+import { adminOnly, optionalAuth, protect } from "../middleware/auth.js";
 import { asyncHandler } from "../middleware/error.js";
 import { Achievement, Certification, Education, Experience, Message, Resume, Skill, Visitor } from "../models/ContentModels.js";
 import { Project } from "../models/Project.js";
@@ -68,7 +68,7 @@ router.get("/analytics", protect, adminOnly, asyncHandler(async (_req, res) => {
   res.json({ projects, visitors, certificates, messages });
 }));
 
-router.get("/:resource", protect, asyncHandler(async (req, res) => {
+router.get("/:resource", optionalAuth, asyncHandler(async (req, res) => {
   const Model = resources[req.params.resource];
   if (!Model) {
     res.status(404);
@@ -84,7 +84,7 @@ router.get("/:resource", protect, asyncHandler(async (req, res) => {
   res.json(docs);
 }));
 
-router.get("/:resource/:id", protect, asyncHandler(async (req, res) => {
+router.get("/:resource/:id", optionalAuth, asyncHandler(async (req, res) => {
   const Model = resources[req.params.resource];
   if (!Model) {
     res.status(404);
@@ -100,10 +100,14 @@ router.get("/:resource/:id", protect, asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Record not found");
   }
+  if (req.params.resource === "projects" && doc.visibility === "Private" && req.user?.role !== "admin") {
+    res.status(403);
+    throw new Error("Admin access required");
+  }
   res.json(doc);
 }));
 
-router.post("/messages", protect, asyncHandler(async (req, res) => {
+router.post("/messages", asyncHandler(async (req, res) => {
   const message = await Message.create(req.body);
   res.status(201).json(message);
 }));

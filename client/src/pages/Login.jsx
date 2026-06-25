@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { LockKeyhole, Moon, Sun } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../state/AuthContext.jsx";
 import { useTheme } from "../state/ThemeContext.jsx";
 
@@ -12,6 +12,8 @@ export default function Login() {
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from || "/admin";
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -19,7 +21,7 @@ export default function Login() {
     setError("");
     try {
       await login(form);
-      navigate("/", { replace: true });
+      navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Access denied");
     } finally {

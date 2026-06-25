@@ -5,7 +5,7 @@ import { useAuth } from "../state/AuthContext.jsx";
 import { useTheme } from "../state/ThemeContext.jsx";
 
 export default function Layout({ children }) {
-  const { logout, isAdmin } = useAuth();
+  const { logout, token } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [progress, setProgress] = useState(0);
 
@@ -26,11 +26,11 @@ export default function Layout({ children }) {
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <Link to="/" className="font-bold tracking-tight">Ritik Singh</Link>
           <div className="flex items-center gap-2">
-            {isAdmin && <Link className="btn-secondary" to="/admin"><Shield size={16} /> Admin</Link>}
+            <Link className="btn-secondary" to="/admin"><Shield size={16} /> Admin</Link>
             <button className="btn-secondary" onClick={toggleTheme} aria-label="Toggle theme">
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            <button className="btn-secondary" onClick={logout}><LogOut size={16} /> Logout</button>
+            {token && <button className="btn-secondary" onClick={logout}><LogOut size={16} /> Logout</button>}
           </div>
         </nav>
       </header>

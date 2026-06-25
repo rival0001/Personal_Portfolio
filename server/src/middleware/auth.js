@@ -21,6 +21,22 @@ export const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
+export const optionalAuth = asyncHandler(async (req, _res, next) => {
+  const header = req.headers.authorization || "";
+  const token = header.startsWith("Bearer ") ? header.slice(7) : null;
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-accessIdHash");
+    if (user?.isActive) req.user = user;
+  } catch {
+    req.user = null;
+  }
+
+  next();
+});
+
 export function adminOnly(req, res, next) {
   if (req.user?.role !== "admin") {
     res.status(403);

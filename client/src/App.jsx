@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -9,7 +9,8 @@ import { useAuth } from "./state/AuthContext.jsx";
 
 function Protected({ children, admin = false }) {
   const { token, isAdmin } = useAuth();
-  if (!token) return <Navigate to="/login" replace />;
+  const location = useLocation();
+  if (!token) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   if (admin && !isAdmin) return <Navigate to="/" replace />;
   return children;
 }
@@ -34,8 +35,8 @@ export default function App() {
       </Helmet>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Protected><Dashboard /></Protected>} />
-        <Route path="/projects/:slug" element={<Protected><ProjectDetails /></Protected>} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/projects/:slug" element={<ProjectDetails />} />
         <Route path="/admin" element={<Protected admin><Admin /></Protected>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
