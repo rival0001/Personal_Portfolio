@@ -12,6 +12,14 @@ import profile from "../assets/Media.jpg";
 
 const filters = ["All", "Power BI", "SQL", "Python", "AI", "Machine Learning", "Data Engineering", "Web Development"];
 
+function assetUrl(value) {
+  if (!value) return "";
+  if (/^(https?:)?\/\//i.test(value) || value.startsWith("data:")) return value;
+
+  const apiOrigin = new URL(api.defaults.baseURL).origin;
+  return value.startsWith("/") ? `${apiOrigin}${value}` : `${apiOrigin}/uploads/${value}`;
+}
+
 export default function Dashboard() {
   const [data, setData] = useState({ projects: [], education: [], experience: [], skills: [], certifications: [], achievements: [], resume: [] });
   const [query, setQuery] = useState("");
@@ -93,14 +101,29 @@ export default function Dashboard() {
       <section className="section">
         <SectionTitle eyebrow="Journey" title="Education Timeline" />
         <div className="border-l border-cyan-500/40 pl-6">
-          {data.education.map((item) => <Card key={item._id} className="mb-5"><h3 className="font-bold">{item.level || item.courseName}</h3><p>{item.schoolName || item.collegeName || item.platform}</p><p className="text-sm text-slate-500">{item.year || item.completionDate}</p></Card>)}
+          {data.education.map((item) => {
+            const score = item.percentage || item.cgpa;
+            const date = item.year || (item.completionDate ? new Date(item.completionDate).getFullYear() : "");
+
+            return (
+              <Card key={item._id} className="mb-5">
+                <h3 className="font-bold">{item.level || item.degree || item.courseName}</h3>
+                <p>{item.schoolName || item.collegeName || item.platform}</p>
+                {(item.board || item.specialization) && <p className="text-sm text-slate-600 dark:text-slate-300">{item.board || item.specialization}</p>}
+                <div className="mt-2 flex flex-wrap gap-2 text-sm text-slate-500">
+                  {date && <span>{date}</span>}
+                  {score && <span className="font-semibold text-cyan-600 dark:text-cyan-300">{item.percentage ? `${score}%` : `CGPA ${score}`}</span>}
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
       <section className="section">
         <SectionTitle eyebrow="Experience" title="Work Timeline" />
         <div className="grid gap-5 md:grid-cols-2">
-          {data.experience.map((exp) => <Card key={exp._id}><h3 className="text-xl font-bold">{exp.role}</h3><p className="font-semibold text-cyan-600">{exp.companyName}</p><p className="mt-2 text-sm">{exp.description}</p><div className="mt-4 flex flex-wrap gap-2">{exp.technologiesUsed?.map((t) => <span className="rounded-md bg-cyan-500/10 px-2 py-1 text-xs" key={t}>{t}</span>)}</div></Card>)}
+          {data.experience.map((exp) => <Card key={exp._id}><div className="flex items-start gap-4">{exp.companyLogo && <img className="h-14 w-14 rounded-md border border-slate-200 object-contain p-1 dark:border-slate-700" src={assetUrl(exp.companyLogo)} alt={`${exp.companyName} logo`} />}<div><h3 className="text-xl font-bold">{exp.role}</h3><p className="font-semibold text-cyan-600">{exp.companyName}</p></div></div><p className="mt-2 text-sm">{exp.description}</p><div className="mt-4 flex flex-wrap gap-2">{exp.technologiesUsed?.map((t) => <span className="rounded-md bg-cyan-500/10 px-2 py-1 text-xs" key={t}>{t}</span>)}</div></Card>)}
         </div>
       </section>
 
@@ -125,7 +148,18 @@ export default function Dashboard() {
       <section className="section">
         <SectionTitle eyebrow="Proof" title="Certifications & Achievements" />
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {[...data.certifications, ...data.achievements].map((item) => <Card key={item._id}><h3 className="font-bold">{item.name || item.title}</h3><p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.platform || item.description}</p>{(item.credentialUrl || item.proofLink) && <a className="mt-4 inline-block text-sm font-semibold text-cyan-600" href={item.credentialUrl || item.proofLink}>View proof</a>}</Card>)}
+          {[...data.certifications, ...data.achievements].map((item) => {
+            const proofImage = item.image || item.proofImage;
+
+            return (
+              <Card key={item._id}>
+                {proofImage && <div className="mb-4 aspect-video overflow-hidden rounded-md bg-slate-200 dark:bg-slate-800"><img className="h-full w-full object-cover" src={assetUrl(proofImage)} alt={`${item.name || item.title} proof`} /></div>}
+                <h3 className="font-bold">{item.name || item.title}</h3>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.platform || item.description}</p>
+                {(item.credentialUrl || item.proofLink) && <a className="mt-4 inline-block text-sm font-semibold text-cyan-600" href={item.credentialUrl || item.proofLink}>View proof</a>}
+              </Card>
+            );
+          })}
         </div>
       </section>
 
