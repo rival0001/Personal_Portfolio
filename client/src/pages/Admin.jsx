@@ -1,3 +1,5 @@
+// What: Protected admin dashboard for managing portfolio content and analytics.
+// Why: Ritik can update projects, resume, skills, messages, and visitor data without code edits.
 import { Plus, Save, Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 import Card from "../components/Card.jsx";
@@ -8,6 +10,7 @@ import { api } from "../lib/api.js";
 const resources = ["projects", "education", "experience", "certifications", "achievements", "resume", "skills", "messages", "visitors"];
 
 const templates = {
+  // Why: Templates define the editable fields for each MongoDB-backed content type.
   projects: { title: "", category: "", shortDescription: "", description: "", problemStatement: "", solution: "", technologiesUsed: [], githubUrl: "", liveUrl: "", datasetUrl: "", documentationUrl: "", images: [], screenshots: [], videoDemo: "", architectureDiagram: "", status: "Completed", learningOutcomes: [], challengesFaced: [], futureEnhancements: [], tags: [], rating: 5, visibility: "Public" },
   education: { level: "", schoolName: "", board: "", percentage: "", year: "", collegeName: "", degree: "", specialization: "", cgpa: "", courseName: "", platform: "", certificateLink: "" },
   experience: { companyName: "", role: "", location: "", description: "", achievements: [], technologiesUsed: [], companyLogo: "" },
@@ -35,6 +38,7 @@ export default function Admin() {
   }, []);
 
   async function load(resource) {
+    // Why: Reload after switching tabs or saving so the list reflects MongoDB state.
     const { data } = await api.get(`/${resource}`);
     setItems(data);
     setForm(templates[resource] || {});
@@ -42,6 +46,7 @@ export default function Admin() {
   }
 
   function update(key, value) {
+    // Why: Array fields are entered as comma-separated text to keep the admin form compact.
     setForm({ ...form, [key]: arrayFields.has(key) ? value.split(",").map((x) => x.trim()).filter(Boolean) : value });
   }
 
@@ -64,6 +69,7 @@ export default function Admin() {
   }
 
   async function uploadFiles(event, field) {
+    // Why: Uploads return public file URLs that can be saved directly into content records.
     const payload = new FormData();
     [...event.target.files].forEach((file) => payload.append("files", file));
     const { data } = await api.post("/uploads", payload);

@@ -1,8 +1,11 @@
+// What: Multer upload configuration for images, videos, and resume files.
+// Why: Admin uploads need stable local file URLs before a cloud storage service is added.
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
 const uploadDir = path.resolve("uploads");
+// Why: Create the upload directory automatically so first-time setup does not fail.
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({

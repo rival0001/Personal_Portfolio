@@ -1,3 +1,5 @@
+# What: Defines the pnpm monorepo workspace.
+# Why: One install command manages root, frontend, and backend dependencies together.
 packages:
   - client
   - server

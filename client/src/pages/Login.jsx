@@ -1,3 +1,5 @@
+// What: Admin login screen for full name and unique access ID.
+// Why: The public portfolio stays open, but admin actions need a protected entry point.
 import { motion } from "framer-motion";
 import { LockKeyhole, Moon, Sun } from "lucide-react";
 import { useState } from "react";
@@ -21,6 +23,7 @@ export default function Login() {
     setError("");
     try {
       await login(form);
+      // Why: Admin clicks should return to Admin after successful authentication.
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Access denied");

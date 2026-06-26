@@ -1,3 +1,5 @@
+// What: MongoDB models for portfolio content collections beyond users and projects.
+// Why: Keeping related lightweight schemas together avoids many tiny model files.
 import mongoose from "mongoose";
 
 const educationSchema = new mongoose.Schema({
@@ -65,6 +67,7 @@ const messageSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const visitorSchema = new mongoose.Schema({
+  // Why: visitorId is browser-generated so unique visitors can be counted across requests.
   visitorId: { type: String, required: true, unique: true, sparse: true, index: true },
   ip: String,
   userAgent: String,

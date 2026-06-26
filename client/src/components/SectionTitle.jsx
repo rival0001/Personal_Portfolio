@@ -1,3 +1,5 @@
+// What: Standard section heading component for eyebrow, title, and optional text.
+// Why: Reusing it keeps spacing and typography consistent across the portfolio.
 export default function SectionTitle({ eyebrow, title, text }) {
   return (
     <div className="mb-8 max-w-3xl">

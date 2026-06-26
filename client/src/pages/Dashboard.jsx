@@ -1,3 +1,5 @@
+// What: Public portfolio page with hero, about, timelines, skills, projects, and contact.
+// Why: This is the main professional profile visitors see without logging in.
 import { motion } from "framer-motion";
 import { Download, ExternalLink, Github, Mail, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -6,6 +8,7 @@ import Card from "../components/Card.jsx";
 import Layout from "../components/Layout.jsx";
 import SectionTitle from "../components/SectionTitle.jsx";
 import { api } from "../lib/api.js";
+import profile from "../assets/Media.jpg";
 
 const filters = ["All", "Power BI", "SQL", "Python", "AI", "Machine Learning", "Data Engineering", "Web Development"];
 
@@ -16,9 +19,11 @@ export default function Dashboard() {
   const [message, setMessage] = useState({ name: "", email: "", message: "" });
 
   useEffect(() => {
+    // Why: Load all public portfolio collections in parallel for faster first paint.
     Promise.all(["projects", "education", "experience", "skills", "certifications", "achievements", "resume"].map((r) => api.get(`/${r}`))).then((responses) => {
       setData(Object.fromEntries(responses.map((res, i) => [["projects", "education", "experience", "skills", "certifications", "achievements", "resume"][i], res.data])));
     });
+    // Why: Store one browser-level ID so repeat visits update the same visitor record.
     let visitorId = localStorage.getItem("visitorId");
 
     if (!visitorId) {
@@ -26,6 +31,7 @@ export default function Dashboard() {
       localStorage.setItem("visitorId", visitorId);
     }
 
+    // Why: Visitor tracking should never block the portfolio if the API is unavailable.
     api.post("/visitors", {
       visitorId,
       page: "/",
@@ -34,12 +40,14 @@ export default function Dashboard() {
   }, []);
 
   const projects = useMemo(() => data.projects.filter((project) => {
+    // Why: Search and category filtering run client-side for instant project discovery.
     const haystack = `${project.title} ${project.shortDescription} ${(project.tags || []).join(" ")} ${(project.technologiesUsed || []).join(" ")}`.toLowerCase();
     return haystack.includes(query.toLowerCase()) && (filter === "All" || haystack.includes(filter.toLowerCase()));
   }), [data.projects, query, filter]);
 
   async function sendMessage(event) {
     event.preventDefault();
+    // Why: Contact submissions are stored in MongoDB for admin follow-up.
     await api.post("/messages", message);
     setMessage({ name: "", email: "", message: "" });
   }
@@ -65,22 +73,20 @@ export default function Dashboard() {
           </div>
         </motion.div>
         <Card className="p-4">
-          <div className="aspect-square overflow-hidden rounded-lg bg-[linear-gradient(135deg,#0f172a,#0891b2,#f43f5e)] p-1">
-            <div className="grid h-full place-items-center rounded-md bg-white/15 text-center text-white backdrop-blur-sm">
-              <div>
-                <div className="mx-auto mb-4 grid h-28 w-28 place-items-center rounded-full bg-white/20 text-5xl font-black">RS</div>
-                <p className="text-lg font-semibold">Profile Photo Ready</p>
-                <p className="text-sm opacity-80">Upload your image from Admin</p>
-              </div>
-            </div>
-          </div>
+          <div className="aspect-square overflow-hidden rounded-lg">
+          <img
+           src={profile}
+           alt="Ritik Singh"
+           className="h-full w-full object-cover rounded-lg"
+           />
+        </div>
         </Card>
       </section>
 
       <section className="section" id="about">
         <SectionTitle eyebrow="About" title="Professional Profile" text="A concise view of personal details, career direction, and analytical strengths." />
         <div className="grid gap-4 md:grid-cols-3">
-          {["Full Name: Ritik Singh", "Current City: Add current city", "Home Town: Add home town", "Date of Birth: Add DOB", "Career Objective: Build insight-led data products", "Professional Summary: Data analyst focused on BI, SQL, automation, and AI-enabled workflows"].map((item) => <Card key={item}>{item}</Card>)}
+          {["Full Name: Ritik Singh", "Current City: Kolkata", "Home Town: Varanasi", "Date of Birth: 30/06/2003", "Career Objective: Build insight-led data products", "Professional Summary: Data analyst focused on BI, SQL, automation, and AI-enabled workflows"].map((item) => <Card key={item}>{item}</Card>)}
         </div>
       </section>
 
@@ -126,7 +132,7 @@ export default function Dashboard() {
       <section className="section" id="contact">
         <SectionTitle eyebrow="Contact" title="Let’s Connect" />
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card><p>Email: add-email@example.com</p><p>Phone: Add phone</p><p>LinkedIn: Add LinkedIn</p><p>GitHub: Add GitHub</p><p>Location: India</p></Card>
+          <Card><p>Email: ritik306singh@gmail.com </p><p>Phone: 6207262105</p><p>LinkedIn: www.linkedin.com/in/ritik-singh-029a98221</p><p>GitHub: https://github.com/rival0001</p><p>Location: India</p></Card>
           <Card><form onSubmit={sendMessage} className="grid gap-3"><input className="rounded-md border border-slate-300 bg-transparent px-3 py-2" placeholder="Name" value={message.name} onChange={(e) => setMessage({ ...message, name: e.target.value })} required /><input className="rounded-md border border-slate-300 bg-transparent px-3 py-2" placeholder="Email" type="email" value={message.email} onChange={(e) => setMessage({ ...message, email: e.target.value })} required /><textarea className="min-h-32 rounded-md border border-slate-300 bg-transparent px-3 py-2" placeholder="Message" value={message.message} onChange={(e) => setMessage({ ...message, message: e.target.value })} required /><button className="btn-primary">Send Message</button></form></Card>
         </div>
       </section>

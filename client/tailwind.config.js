@@ -1,3 +1,5 @@
+// What: Tailwind theme configuration for the portfolio UI.
+// Why: Enables class-based dark mode and shared design tokens.
 export default {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,jsx}"],

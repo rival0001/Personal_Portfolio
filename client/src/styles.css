@@ -1,3 +1,5 @@
+/* What: Global Tailwind setup and shared visual utilities. */
+/* Why: Central CSS keeps glassmorphism, animated background, and reusable button styles consistent. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,6 +25,7 @@ body {
 }
 
 .glass {
+  /* Why: The translucent layer creates the portfolio's premium glassmorphism look. */
   border: 1px solid rgba(148, 163, 184, 0.22);
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(22px);

@@ -1,3 +1,5 @@
+// What: Shared async and error handling middleware.
+// Why: Routes can throw errors cleanly without repeating try/catch blocks.
 export function asyncHandler(fn) {
   return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 }

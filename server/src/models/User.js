@@ -1,3 +1,5 @@
+// What: MongoDB user model for authorized portfolio/admin access.
+// Why: Access IDs are stored as hashes instead of plain text for safer authentication.
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
@@ -13,6 +15,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.matchAccessId = function matchAccessId(accessId) {
+  // Why: Compare against the bcrypt hash without exposing the stored secret.
   return bcrypt.compare(accessId, this.accessIdHash);
 };
 

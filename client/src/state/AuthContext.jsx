@@ -1,3 +1,5 @@
+// What: Stores login state and exposes login/logout helpers to React components.
+// Why: Auth state is needed across navigation, admin protection, and API requests.
 import { createContext, useContext, useMemo, useState } from "react";
 import { api } from "../lib/api";
 
@@ -9,6 +11,7 @@ export function AuthProvider({ children }) {
 
   async function login(payload) {
     const { data } = await api.post("/auth/login", payload);
+    // Why: Persist the session so refreshes do not immediately log the admin out.
     localStorage.setItem("portfolio_token", data.token);
     localStorage.setItem("portfolio_user", JSON.stringify(data.user));
     setToken(data.token);
@@ -16,6 +19,7 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    // Why: Clear both token and user metadata to fully end the local session.
     localStorage.removeItem("portfolio_token");
     localStorage.removeItem("portfolio_user");
     setToken(null);

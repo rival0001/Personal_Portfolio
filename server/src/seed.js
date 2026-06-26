@@ -1,3 +1,5 @@
+// What: Seeds a default admin user and starter portfolio data.
+// Why: New local installs need a working login and sample content immediately.
 import dotenv from "dotenv";
 import { connectDB } from "./utils/db.js";
 import { User } from "./models/User.js";
@@ -10,6 +12,7 @@ await connectDB();
 const fullName = process.env.ADMIN_FULL_NAME || "Ritik Singh";
 const accessId = process.env.ADMIN_ACCESS_ID || "RITIK-ADMIN-2026";
 
+// Why: Reset seeded collections so repeated seed runs produce a predictable local database.
 await User.deleteMany({});
 await User.create({
   fullName,

@@ -1,3 +1,5 @@
+// What: Provides the shared portfolio shell: navbar, scroll progress, and back-to-top.
+// Why: Keeping these controls in one layout prevents repeated page chrome.
 import { ArrowUp, LogOut, Moon, Shield, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -10,6 +12,7 @@ export default function Layout({ children }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Why: The scroll progress bar gives users feedback on long portfolio pages.
     const onScroll = () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
       setProgress(total ? (window.scrollY / total) * 100 : 0);

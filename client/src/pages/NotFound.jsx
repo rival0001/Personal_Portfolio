@@ -1,3 +1,5 @@
+// What: Fallback page for unknown frontend routes.
+// Why: Users need a clear path back instead of a blank screen on invalid URLs.
 import { Link } from "react-router-dom";
 
 export default function NotFound() {

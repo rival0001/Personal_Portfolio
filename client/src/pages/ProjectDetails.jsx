@@ -1,3 +1,5 @@
+// What: Public detailed project page for a selected portfolio project.
+// Why: Project cards stay compact while this page shows architecture, outcomes, media, and links.
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -11,6 +13,7 @@ export default function ProjectDetails() {
   const [project, setProject] = useState(null);
 
   useEffect(() => {
+    // Why: Supports both slug and ObjectId project URLs from the backend route.
     api.get(`/projects/${slug}`).then((res) => setProject(res.data));
   }, [slug]);
 

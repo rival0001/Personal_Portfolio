@@ -1,3 +1,5 @@
+// What: Authentication API routes for login and current-user lookup.
+// Why: The Admin dashboard needs a secure JWT session before protected actions.
 import express from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
@@ -7,6 +9,7 @@ import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
 function escapeRegExp(value) {
+  // Why: User-entered names are used in a regex lookup, so special characters must be escaped.
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
@@ -17,6 +20,7 @@ function signToken(user) {
 }
 
 router.post("/login", asyncHandler(async (req, res) => {
+  // Why: Both name and access ID are required to reduce accidental or anonymous access.
   const { fullName, accessId } = req.body;
   if (!fullName || !accessId) {
     res.status(400);

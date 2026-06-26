@@ -1,3 +1,5 @@
+// What: MongoDB project model for dynamic portfolio project entries.
+// Why: Projects need rich metadata for cards, filters, detail pages, and admin CRUD.
 import mongoose from "mongoose";
 import slugify from "slugify";
 
@@ -33,6 +35,7 @@ const projectSchema = new mongoose.Schema(
 );
 
 projectSchema.pre("validate", function setSlug(next) {
+  // Why: Slugs create readable project URLs while keeping ObjectId fallback support.
   if (this.title && !this.slug) {
     this.slug = slugify(this.title, { lower: true, strict: true });
   }

@@ -1,3 +1,5 @@
+// What: Express app entry point for the portfolio API.
+// Why: Centralizes security middleware, API routes, uploads, and database startup.
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
@@ -18,6 +20,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Why: Security and parsing middleware run before routes so every request is protected consistently.
 app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors({ origin: process.env.CLIENT_URL?.split(",") || "*", credentials: true }));
 app.use(express.json({ limit: "10mb" }));
@@ -38,6 +41,7 @@ app.use(errorHandler);
 
 const port = process.env.PORT || 5000;
 
+// Why: Start listening only after MongoDB is connected so API routes can safely query data.
 connectDB().then(() => {
   app.listen(port, () => console.log(`API running on port ${port}`));
 });

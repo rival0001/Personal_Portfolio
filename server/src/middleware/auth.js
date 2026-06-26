@@ -1,8 +1,11 @@
+// What: JWT authentication and admin authorization middleware.
+// Why: Admin APIs need strict access control while public APIs can optionally identify admins.
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import { asyncHandler } from "./error.js";
 
 export const protect = asyncHandler(async (req, res, next) => {
+  // Why: Protected routes require a valid Bearer token from the frontend.
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
   if (!token) {
@@ -22,6 +25,7 @@ export const protect = asyncHandler(async (req, res, next) => {
 });
 
 export const optionalAuth = asyncHandler(async (req, _res, next) => {
+  // Why: Public routes can still detect admins to show private project data when allowed.
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
   if (!token) return next();

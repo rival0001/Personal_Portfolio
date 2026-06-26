@@ -1,3 +1,5 @@
+// What: Reusable animated glass card wrapper.
+// Why: Shared card styling keeps sections visually consistent without duplicating classes.
 import { motion } from "framer-motion";
 
 export default function Card({ children, className = "" }) {

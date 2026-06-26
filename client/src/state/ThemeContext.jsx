@@ -1,3 +1,5 @@
+// What: Manages dark/light mode for the whole React app.
+// Why: Theme choice must update the root class so Tailwind dark styles activate.
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const ThemeContext = createContext(null);
@@ -6,6 +8,7 @@ export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
 
   useEffect(() => {
+    // Why: Tailwind's dark mode reads the `dark` class on the html element.
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
   }, [theme]);

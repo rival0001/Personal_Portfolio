@@ -1,3 +1,5 @@
+// What: Boots the React app and attaches global providers.
+// Why: Centralizing providers keeps routing, auth, theme, and SEO available everywhere.
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
@@ -21,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 
+// Why: Register the PWA worker only in browsers that support it.
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js").catch(() => {});

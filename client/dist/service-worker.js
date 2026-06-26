@@ -1,3 +1,5 @@
+// What: Minimal PWA service worker for offline fallback caching.
+// Why: Gives the portfolio basic install/offline behavior without complicating app code.
 const CACHE_NAME = "ritik-portfolio-v1";
 const ASSETS = ["/", "/manifest.webmanifest"];
 

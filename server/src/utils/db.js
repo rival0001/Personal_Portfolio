@@ -1,3 +1,5 @@
+// What: MongoDB connection helper.
+// Why: Keeps database setup separate from route and server logic.
 import mongoose from "mongoose";
 
 export async function connectDB() {

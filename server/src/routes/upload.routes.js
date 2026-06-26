@@ -1,3 +1,5 @@
+// What: Protected upload route for admin-managed portfolio files.
+// Why: Only admins should be able to add public file URLs to the portfolio.
 import express from "express";
 import { protect, adminOnly } from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
