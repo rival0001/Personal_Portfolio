@@ -47,7 +47,7 @@ export default function Admin() {
 
   function update(key, value) {
     // Why: Array fields are entered as comma-separated text to keep the admin form compact.
-    setForm({ ...form, [key]: arrayFields.has(key) ? value.split(",").map((x) => x.trim()).filter(Boolean) : value });
+    setForm({ ...form, [key]: arrayFields.has(key) ? value.split(",").map((x) => x.trim()) : value });
   }
 
   async function save() {
